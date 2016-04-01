@@ -1,8 +1,8 @@
 CC = g++
 
-CPPFLAGS = -g -Wall -O3 -Wunused-result
+CPPFLAGS = -g -Wall -O0 -Wunused-result 
 
-OBJS = ./src/main.o ./src/mvgraph.o
+OBJS = ./src/main.o ./src/batch_add.o
 SRCS = ./src/$(OBJS:.o=.cpp)
 BIN = ./bin/
 INCLUDE = ./src

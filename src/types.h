@@ -1,17 +1,24 @@
 #include <map>
 #include <set>
 #include <list>
+using namespace std;
 
 typedef unsigned int vid_t;
 typedef unsigned int nid_t;
 
-typedef std::list<LSPNode> LSPList;
+struct Node;
+struct LSPNode;
+struct Cluster;
+struct Bridge;
+struct ValidNode;
+
+typedef list<LSPNode> LSPList;
 
 struct Node{
     Cluster *cluster;
-    std::set<Node*> inEdges;
-    std::set<Node*> outEdges;
-    std::map<Node*, LSPList> lsp;
+    set<Node*> inEdges;
+    set<Node*> outEdges;
+    map<Node*, LSPList> lsp;
 };
 
 struct LSPNode{
@@ -20,8 +27,8 @@ struct LSPNode{
 };
 
 struct Cluster{
-    std::list<Bridge> inBridges;
-    std::list<Bridge> outBridges;
+    list<Bridge> inBridges;
+    list<Bridge> outBridges;
     bool isUpdating;
     unsigned int size;
 };
@@ -29,10 +36,10 @@ struct Cluster{
 struct Bridge{
     Node *src;
     Node *dest;
-    std::list<ValidNode> validList;
-}
+    list<ValidNode> validList;
+};
 
 struct ValidNode{
     bool isValid;
     vid_t ver;
-}
+};

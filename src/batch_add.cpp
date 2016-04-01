@@ -1,31 +1,18 @@
-#include "types.h"
-#include <vector>
-
-
-/*
-S - Start Node
-E - End Node
-N - lsp iterator
-P - Passing Node
-*/
-#define LSP_FIND(S, E) ((S)->lsp.find(E))
-#define LSP_IS_EXIST(N, S) ((N) != (S)->lsp.end())
-#define LSP_NEW_PATH(S, P, E) ((S)->lsp[P].back().dist + (P)->lsp[E].back().dist)
-#define LSP_IS_NEED_TO_UPDATE(N, S, P, E) ((N)->second.back().dist > LSP_NEW_PATH(S, P, E))
-
-
-std::map<nid_t, Node> nodes;
+#include "batch_add.h"
+#include <queue>
 
 bool updateLSP(Node* src, Node* dest, Node* updatedNode, vid_t curr_ver){
-    std::queue<Node*> nodeQueue;
-    std::set<Node*> foundCheck;
+    queue<Node*> nodeQueue;
+    set<Node*> foundCheck;
     Node* curr_node;
 
-    std::map<nid_t, LSPList>::iterator lspIt;
+    map<Node* , LSPList>::iterator lspIt;
+    LSPNode new_node = {0, curr_ver};
 
     lspIt = LSP_FIND(updatedNode, dest);
+
     //if this node don't have to use this new edge, return false;
-    if (LSP_IS_EXIST(lspIt, updatedNode) && !LSP_IS_NEED_TO_UPDATE(lspIt, updatedNode, src, dest)){
+    if (LSP_IS_EXIST(lspIt, updatedNode) && !LSP_IS_NEED_TO_UPDATE(lspIt, LSP_NEW_PATH(updatedNode, src, dest))){
         return false;//update is not used
     }
 
@@ -38,23 +25,29 @@ bool updateLSP(Node* src, Node* dest, Node* updatedNode, vid_t curr_ver){
 
         //if this node don't have to use this new edge, branch it;
         lspIt = LSP_FIND(updatedNode, curr_node);
+        new_node.dist = LSP_NEW_PATH(updatedNode, src, curr_node);
+
         if (LSP_IS_EXIST(lspIt, updatedNode)){
-            if (!LSP_IS_NEED_TO_UPDATE(lspIt, updatedNode, src, curr_node)){
+            if (!LSP_IS_NEED_TO_UPDATE(lspIt, new_node.dist)){
                 //branch
                 continue; 
             }
-            lstIt->second.push_back({LSP_NEW_PATH(updatedNode, src, curr_node), curr_ver})
+            if (lspIt->second.back().ver == curr_ver)
+                lspIt->second.back().dist = new_node.dist;
+            else
+                lspIt->second.push_back(new_node);
         }
         else{
-            updatedNode->lsp[curr_node].push_back({LSP_NEW_PATH(updatedNode, src, curr_node), curr_ver});
+            updatedNode->lsp[curr_node].push_back(new_node);
         }
 
-        for (std::set<Node*>::iterator it = curr_node->outEdges.begin(); it != curr_node->outEdges.end(); it++){
+        for (set<Node*>::iterator it = curr_node->outEdges.begin(); it != curr_node->outEdges.end(); it++){
             if (foundCheck.find(*it) == foundCheck.end()){
                 nodeQueue.push(*it);
             }
         }
     }
+    return true;
 }
 
 /*
@@ -67,8 +60,8 @@ bool updateLSP(Node* src, Node* dest, Node* updatedNode, vid_t curr_ver){
 
 */
 void addEdge(Node* src, Node* dest, vid_t curr_ver){
-    std::queue<Node*> nodeQueue;
-    std::set<Node*> foundCheck;
+    queue<Node*> nodeQueue;
+    set<Node*> foundCheck;
     Node* curr_node;
 
     nodeQueue.push(src);
@@ -80,7 +73,7 @@ void addEdge(Node* src, Node* dest, vid_t curr_ver){
 
         if (!updateLSP(src, dest, curr_node, curr_ver)) continue;
 
-        for (std::set<Node*>::iterator it = node->inEdges.begin(); it != node->inEdges.end(); it++){
+        for (set<Node*>::iterator it = curr_node->inEdges.begin(); it != curr_node->inEdges.end(); it++){
             if (foundCheck.find(*it) == foundCheck.end()){
                 nodeQueue.push(*it);
             }

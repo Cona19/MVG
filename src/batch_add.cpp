@@ -13,10 +13,10 @@ bool compareAndUpdateLSP(Node* src, Node* dest, LSPNode *new_node){
         if (lspIt->second.back().ver == new_node->ver)
             lspIt->second.back().dist = new_node->dist;
         else
-            lspIt->second.push_back(*new_node);
+            lspIt->second.PUSH_LATEST_LSP(*new_node);
     }
     else{
-        src->lsp[dest].push_back(*new_node);
+        src->lsp[dest].PUSH_LATEST_LSP(*new_node);
     }
     return true;
 }

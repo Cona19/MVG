@@ -1,6 +1,10 @@
+#pragma once
 #include <map>
 #include <set>
 #include <list>
+
+#include "config.h"
+
 using namespace std;
 
 typedef unsigned int vid_t;
@@ -19,6 +23,9 @@ struct Node{
     set<Node*> inEdges;
     set<Node*> outEdges;
     map<Node*, LSPList> lsp;
+#ifdef LSP_TEST
+    nid_t nid;
+#endif
 };
 
 struct LSPNode{

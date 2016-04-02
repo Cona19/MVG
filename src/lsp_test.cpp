@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #ifdef LSP_TEST
-FILE *fp = stdout;
+static FILE *fp = stdout;
 
 void lspTest(){
     for (map<nid_t, Node>::iterator it = nodes.begin(); it != nodes.end(); it++){
@@ -20,7 +20,7 @@ void lspTest(){
         for (map<Node*, LSPList>::iterator it2 = curr_node->lsp.begin(); it2 != curr_node->lsp.end(); it2++){
             fprintf(fp, "  %u : ", it2->first->nid);
             for (LSPList::iterator it3 = it2->second.begin(); it3 != it2->second.end(); it3++){
-                fprintf(fp, "    {d:%u,v:%u}\n", it3->dist, it3->ver);
+                fprintf(fp, "{d:%u,v:%u} ", it3->dist, it3->ver);
             }
             fprintf(fp, "\n");
         }

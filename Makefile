@@ -2,7 +2,7 @@ CC = g++
 
 CPPFLAGS = -g -Wall -O0 -Wunused-result 
 
-OBJS = ./src/main.o ./src/batch_add.o
+OBJS = ./src/main.o ./src/batch_add.o ./src/lsp_test.o
 SRCS = ./src/$(OBJS:.o=.cpp)
 BIN = ./bin/
 INCLUDE = ./src
@@ -19,4 +19,4 @@ clean:
 	rm -rf $(OBJS)
 
 allclean:
-	rm -rf $(OBJS) $(BIN)*
+	rm -rf $(OBJS) $(BIN)spp
